@@ -9,9 +9,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Toast;
-
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import com.ceng319.partsCrib.Model.Users;
 import com.ceng319.partsCrib.Prevalent.Prevalent;
 import com.google.firebase.database.DataSnapshot;
@@ -20,12 +22,27 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
 import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
 
     private Button joinNowButton, loginButton;
     private ProgressDialog loadingBar;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
         loadingBar = new ProgressDialog(this);
 
         Paper.init(this);
+
+
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
                             loadingBar.dismiss();
 
                             Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                            Prevalent.CurrentOnlineUser=userData;
                             startActivity(intent);
                         }
                     }
@@ -106,4 +126,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 }

@@ -67,4 +67,5 @@
         android:text="Create an account"
         android:textColor="@android:color/black"
         />
+
 </RelativeLayout>

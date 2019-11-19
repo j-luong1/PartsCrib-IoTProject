@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ItemActivity">
+
+
+    <TextView
+        android:id="@+id/Name_TV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/Category_TV"
+        android:layout_marginBottom="157dp"
+        android:text="@string/item_name" />
+
+    <TextView
+        android:id="@+id/Category_TV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/Description_TV"
+        android:layout_marginBottom="124dp"
+        android:text="@string/item_category" />
+
+    <TextView
+        android:id="@+id/Description_TV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/Quantity_TV"
+        android:layout_marginBottom="83dp"
+        android:text="@string/item_description" />
+
+    <TextView
+        android:id="@+id/Quantity_TV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="130dp"
+        android:text="@string/item_quantity" />
+
+    <Button
+        android:id="@+id/addToCartBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="80dp"
+        android:layout_marginBottom="137dp"
+        android:text="Add to Cart" />
+
+    <EditText
+        android:id="@+id/quantityField"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/addToCartBtn"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="17dp"
+        android:layout_marginBottom="78dp"
+        android:ems="10"
+        android:inputType="number"
+        android:text="1"
+        android:gravity="center"/>
+
+</RelativeLayout>

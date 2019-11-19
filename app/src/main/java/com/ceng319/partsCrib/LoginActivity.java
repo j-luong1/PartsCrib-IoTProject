@@ -94,10 +94,12 @@ public class LoginActivity extends AppCompatActivity {
 
                   if(userData.getStudent_Number().equals(studentNumber)){
                       if(userData.getPassword().equals(password)){
+
                           Toast.makeText(LoginActivity.this, "Login Success", Toast.LENGTH_SHORT).show();
                           loadingBar.dismiss();
 
                           Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                          Prevalent.CurrentOnlineUser = userData;
                           startActivity(intent);
                       }
                   }

@@ -1,12 +1,13 @@
 package com.ceng319.partsCrib;
 
-import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -19,9 +20,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.ceng319.partsCrib.Prevalent.Prevalent;
-import com.ceng319.partsCrib.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.r0adkll.slidr.Slidr;
+import com.r0adkll.slidr.model.SlidrInterface;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -35,29 +37,33 @@ public class CartActivity extends AppCompatActivity {
     public static final String SHARED_PREFS = Prevalent.CurrentOnlineUser.getStudent_Number();
     private ArrayList<ItemHandler> cart;
 
+    private ListView mCartList;
+    private SlidrInterface slidr;
+
+    SimpleAdapter adapter;
+    List<HashMap<String,String>> listItems = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
+        getSupportActionBar().setTitle(R.string.cart);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Button mButtonRequest = (Button) findViewById(R.id.requestBtn);
+        final Button mButtonRemove = (Button) findViewById(R.id.removeBtn);
+        final ListView itemCartListView = (ListView) findViewById(R.id.cart_ListView);
+
+        HashMap<String,String>  itemQuanity = new HashMap<>();
         mQueue = Volley.newRequestQueue(this);
+        slidr = Slidr.attach(this);
+        mCartList = (ListView) findViewById(R.id.cart_ListView);
 
         loadData();
-        Toast.makeText(CartActivity.this,this.cart.toString(),Toast.LENGTH_SHORT).show();
-
-        ListView itemCartListView = (ListView) findViewById(R.id.cart_ListView);
-        HashMap<String,String>  itemQuanity = new HashMap<>();
-
 
         for(int i=0;i<cart.size();i++){
             itemQuanity.put(cart.get(i).getName(),"SID: "+cart.get(i).getSid()+"    Quantity: "+cart.get(i).getQuantity());
         }
-        List<HashMap<String,String>> listItems = new ArrayList<>();
-
-        SimpleAdapter adapter = new SimpleAdapter(this, listItems,R.layout.list_item_cart,
-                                new String[]{"Name","Quantity"},
-                                new int[]{R.id.text_ItemName,R.id.text_itemQuantity});
 
         Iterator it = itemQuanity.entrySet().iterator();
         while(it.hasNext()){
@@ -68,6 +74,45 @@ public class CartActivity extends AppCompatActivity {
             listItems.add(resultMap);
         }
 
+        adapter = new SimpleAdapter(this, listItems,R.layout.list_item_cart,
+                                new String[]{"Name","Quantity"},
+                                new int[]{R.id.text_ItemName,R.id.text_itemQuantity})
+        {
+            @Override
+            public View getView (final int position, View convertView, ViewGroup parent) {
+                View v = super.getView(position, convertView, parent);
+
+                Button removeBtn=(Button)v.findViewById(R.id.removeBtn);
+                removeBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        AlertDialog.Builder confirm = new AlertDialog.Builder(CartActivity.this);
+                        confirm.setTitle(R.string.remove);
+                        confirm.setMessage(R.string.are_you_sure);
+                        confirm.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                cart.remove(position);
+                                saveData();
+                                listItems.remove(position);
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
+                        confirm.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Toast.makeText(CartActivity.this,R.string.cancel,Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        AlertDialog dialog = confirm.create();
+                        dialog.show();
+                    }
+                });
+                return v;
+            }
+        };
+
         itemCartListView.setAdapter(adapter);
 
         mButtonRequest.setOnClickListener(new View.OnClickListener() {
@@ -75,13 +120,12 @@ public class CartActivity extends AppCompatActivity {
                 makeRequest();
             }
         });
-
     }
 
-
+    //Altered in since I worked on it - Jonathan 11/25
     public void makeRequest(){
 
-        final String url = "http://munro.humber.ca/~n01267335/CENG319/request.php";
+        final String url = "http://apollo.humber.ca/~n01267335/CENG319/request.php";
 
         StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>()
@@ -97,7 +141,6 @@ public class CartActivity extends AppCompatActivity {
                             finish();
                             startActivity(getIntent());
                         }
-
                     }
                 },
                 new Response.ErrorListener()
@@ -145,6 +188,7 @@ public class CartActivity extends AppCompatActivity {
         }
 
     }
+
     public void saveData(){
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

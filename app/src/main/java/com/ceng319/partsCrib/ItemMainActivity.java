@@ -1,14 +1,12 @@
 package com.ceng319.partsCrib;
-import androidx.appcompat.app.AppCompatActivity;
 
+import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -16,31 +14,39 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.r0adkll.slidr.Slidr;
+import com.r0adkll.slidr.model.SlidrInterface;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ItemMainActivity extends AppCompatActivity{
+
     private RequestQueue mQueue;
     private ArrayList <String> categoryList = new ArrayList<>();
     private ListView mListCategories;
     private ArrayAdapter arrayAdapter;
+    private SlidrInterface slidr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_main);
 
-        mListCategories = (ListView)findViewById(R.id.listViewCategories);
+        getSupportActionBar().setTitle(R.string.item_category);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        mListCategories = (ListView)findViewById(R.id.listViewCategories);
         mQueue = Volley.newRequestQueue(this);
+        slidr = Slidr.attach(this);
+
         jsonParse();
         arrayAdapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1);
+
         mListCategories.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -51,12 +57,11 @@ public class ItemMainActivity extends AppCompatActivity{
                 ItemMainActivity.this.startActivity(newIntent);
             }
         });
-
     }
 
     private void jsonParse(){
 
-        String url = "http://munro.humber.ca/~n01267335/CENG319/query.php";
+        String url = "http://apollo.humber.ca/~n01267335/CENG319/query.php";
         JsonObjectRequest request =  new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -70,8 +75,6 @@ public class ItemMainActivity extends AppCompatActivity{
                                 arrayAdapter.clear();
                                 arrayAdapter.addAll(categoryList);
                                 arrayAdapter.notifyDataSetChanged();
-
-
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -84,7 +87,5 @@ public class ItemMainActivity extends AppCompatActivity{
             }
         });
         mQueue.add(request);
-
-
     }
 }

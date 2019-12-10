@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/text_ItemName"
+        android:layout_width="410dp"
+        android:layout_height="65dp"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/text_itemQuantity"
+        android:layout_width="90dp"
+        android:layout_height="60dp"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/removeBtn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/remove" />
+
+</LinearLayout>

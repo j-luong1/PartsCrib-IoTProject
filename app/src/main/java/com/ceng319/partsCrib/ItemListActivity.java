@@ -16,6 +16,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.r0adkll.slidr.Slidr;
+import com.r0adkll.slidr.model.SlidrInterface;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,18 +32,21 @@ public class ItemListActivity extends AppCompatActivity{
     private ListView mListItems;
     private ArrayAdapter arrayAdapter;
     private String selectedCat;
+    private SlidrInterface slidr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
         Intent intent = getIntent();
+        getSupportActionBar().setTitle(R.string.item_name);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         selectedCat = intent.getStringExtra("Category");
-        Toast.makeText(ItemListActivity.this,"clicked item: "+ selectedCat,Toast.LENGTH_SHORT).show();
-
         mListItems = (ListView)findViewById(R.id.listViewItems);
-
+        slidr = Slidr.attach(this);
         mQueue = Volley.newRequestQueue(this);
+
         jsonParse();
         arrayAdapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1);
 
@@ -55,10 +60,12 @@ public class ItemListActivity extends AppCompatActivity{
             }
         });
 
+        Toast.makeText(ItemListActivity.this,"Going to: "+ selectedCat,Toast.LENGTH_SHORT).show();
     }
+
     private void jsonParse(){
 
-        String url = "http://munro.humber.ca/~n01267335/CENG319/query.php?category="+selectedCat;
+        String url = "http://apollo.humber.ca/~n01267335/CENG319/query.php?category="+selectedCat;
 
         JsonObjectRequest request =  new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {

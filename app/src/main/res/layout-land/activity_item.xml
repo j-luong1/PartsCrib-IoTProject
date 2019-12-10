@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_material_light"
+    tools:context=".ItemActivity">
+
+
+    <TextView
+        android:id="@+id/Name_TV"
+        android:layout_width="149dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/Category_TV"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/item_name" />
+
+    <TextView
+        android:id="@+id/Category_TV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/Description_TV"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="13dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/item_category" />
+
+    <TextView
+        android:id="@+id/Description_TV"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:layout_above="@+id/Quantity_TV"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="9dp"
+        android:layout_marginBottom="60dp"
+        android:text="@string/item_description" />
+
+    <TextView
+        android:id="@+id/Quantity_TV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/item_quantity" />
+
+    <Button
+        android:id="@+id/addToCartBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/fab"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="72dp"
+        android:layout_marginBottom="17dp"
+        android:text="@string/add_to_cart" />
+
+    <EditText
+        android:id="@+id/quantityField"
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/addToCartBtn"
+        android:layout_marginEnd="6dp"
+        android:layout_marginBottom="22dp"
+        android:layout_toStartOf="@+id/addBtn"
+        android:ems="10"
+        android:gravity="center"
+        android:inputType="number"
+        android:text="@string/one" />
+
+    <Button
+        android:id="@+id/addBtn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_above="@+id/addToCartBtn"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="38dp"
+        android:layout_marginBottom="26dp"
+        android:background="@drawable/right" />
+
+    <Button
+        android:id="@+id/minusBtn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_above="@+id/addToCartBtn"
+        android:layout_marginEnd="7dp"
+        android:layout_marginBottom="27dp"
+        android:layout_toStartOf="@+id/quantityField"
+        android:background="@drawable/left" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="9dp"
+        app:srcCompat="@drawable/nav_cart" />
+</RelativeLayout>

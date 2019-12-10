@@ -1,26 +1,65 @@
 <resources>
     <string name="app_name">partsCrib</string>
-    <string name="title_activity_home">HomeActivity</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
-
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
-    <string name="menu_tools">Tools</string>
-    <string name="menu_share">Share</string>
-    <string name="menu_send">Send</string>
-
-    <string name="item_name">Item Name</string>
+    <string name="add_prompt">Do you wish to add this to your current cart?</string>
+    <string name="add_to_cart">Add to Cart</string>
+    <string name="add_yes">Added to cart!</string>
+    <string name="admin">Are you an Admin?</string>
+    <string name="already_have_an_account_login">Already have an account? Login</string>
+    <string name="already_logged">You\'re already logged in!</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="cancel">No changes made.</string>
+    <string name="cart">Cart</string>
+    <string name="categories">Categories</string>
+    <string name="confirm">Confirm</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="create_account">Create account</string>
+    <string name="create_an_account">Create an account</string>
+    <string name="current_password">Current Password</string>
+    <string name="db_error">Unable to retrieve data from server</string>
+    <string name="email">Email</string>
+    <string name="enter_pass">Please Enter your Password</string>
+    <string name="enter_s_num">Please Enter your Student Number</string>
+    <string name="first_name">First Name</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="item_cart">Item Cart</string>
     <string name="item_category">Item Category</string>
     <string name="item_description">Item Description</string>
+    <string name="item_name">Item Name</string>
     <string name="item_quantity">Item Quantity</string>
-    <string name="item_cart">Item Cart</string>
-
+    <string name="language">Language Settings</string>
+    <string name="language_msg">Choose a language for the APP</string>
+    <string name="last_name">Last Name</string>
+    <string name="logging">Logging in...</string>
+    <string name="login">Login</string>
+    <string name="logout">Logout</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_send">Send</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_tools">Tools</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="new_password">New Password</string>
+    <string name="not_admin">I\'m not an Admin</string>
+    <string name="order_exists">Item already exists!</string>
+    <string name="orders">Orders</string>
+    <string name="orders_details">Order Details</string>
+    <string name="one" translatable="false">1</string>
+    <string name="parts_crib">Parts Crib</string>
+    <string name="password">Password</string>
+    <string name="permission_description">store personal account information</string>
+    <string name="permission_label">Store account information</string>
+    <string name="remember_me">Remember me</string>
+    <string name="remove">Remove</string>
     <string name="request_items">Request Items</string>
-
+    <string name="settings">Settings</string>
+    <string name="show_password">Show Password</string>
+    <string name="student_number">Student Number</string>
+    <string name="title_activity_home">HomeActivity</string>
 </resources>

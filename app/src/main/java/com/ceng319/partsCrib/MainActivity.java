@@ -1,53 +1,45 @@
 package com.ceng319.partsCrib;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import io.paperdb.Paper;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Toast;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import com.ceng319.partsCrib.Model.Users;
 import com.ceng319.partsCrib.Prevalent.Prevalent;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONArray;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 
-import org.w3c.dom.Text;
+import java.util.ArrayList;
+import java.util.Locale;
+
+import static com.ceng319.partsCrib.Prevalent.Prevalent.UserPasswordKey;
 
 public class MainActivity extends AppCompatActivity {
 
     private Button joinNowButton, loginButton;
     private ProgressDialog loadingBar;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ProcessPreference();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportActionBar().hide();
 
         joinNowButton = (Button) findViewById(R.id.main_join_now_btn);
         loginButton = (Button) findViewById(R.id.main_login_btn);
@@ -55,15 +47,14 @@ public class MainActivity extends AppCompatActivity {
 
         Paper.init(this);
 
-
+        String UserStudentNumberKey  = Paper.book().read(Prevalent.UserStudentNumberKey);
+        String UserPasswordKey  = Paper.book().read(Prevalent.UserPasswordKey);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view){
-
                 Intent intent = new Intent(MainActivity.this,LoginActivity.class);
                 startActivity(intent);
-
             }
         });
 
@@ -73,58 +64,101 @@ public class MainActivity extends AppCompatActivity {
             {
                 Intent intent = new Intent(MainActivity.this,RegisterActivity.class);
                 startActivity(intent);
-
             }
 
         });
 
-        String UserStudentNumberKey  = Paper.book().read(Prevalent.UserStudentNumberKey);
-        String UserPasswordKey  = Paper.book().read(Prevalent.UserPasswordKey);
-
         if(UserStudentNumberKey != "" && UserPasswordKey != ""){
             if(!TextUtils.isEmpty(UserStudentNumberKey) && !TextUtils.isEmpty(UserPasswordKey)){
-                AllowAccess(UserStudentNumberKey, UserPasswordKey);
-                loadingBar.setTitle("Already Logged in");
+                loadingBar.setTitle(R.string.already_logged);
                 loadingBar.setMessage("Please Wait");
                 loadingBar.setCanceledOnTouchOutside(false);
                 loadingBar.show();
+
+                AttemptResignin attemptLogin = new AttemptResignin();
+                attemptLogin.execute(UserStudentNumberKey,UserPasswordKey);
             }
         }
     }
 
-    private void AllowAccess(final String studentNumber, final String password) {
-        final DatabaseReference RootRef;
-        RootRef = FirebaseDatabase.getInstance().getReference();
-
-        RootRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.child("Users").child(studentNumber).exists()){
-                    Users userData = dataSnapshot.child("Users").child(studentNumber).getValue(Users.class);
-
-                    if(userData.getStudent_Number().equals(studentNumber)){
-                        if(userData.getPassword().equals(password)){
-                            Toast.makeText(MainActivity.this, "Login Success", Toast.LENGTH_SHORT).show();
-                            loadingBar.dismiss();
-
-                            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                            Prevalent.CurrentOnlineUser=userData;
-                            startActivity(intent);
-                        }
-                    }
-
-                }
-                else{
-                    Toast.makeText(MainActivity.this, "User or Password wrong", Toast.LENGTH_SHORT).show();
-                    loadingBar.dismiss();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+    protected void onStop() {
+        loadingBar.dismiss();
+        super.onStop();
     }
+
+    private void ProcessPreference() {
+        SharedPreferences settings = getSharedPreferences("SettingsActivity",MODE_PRIVATE);
+        Boolean language = settings.getBoolean("language",false);
+
+        if (language) {
+            setAppLocale("fr");
+        } else {
+            setAppLocale("en");
+        }
+    }
+
+    private void setAppLocale(String localeCode) {
+        Resources resources = getResources();
+        DisplayMetrics dm = resources.getDisplayMetrics();
+        Configuration config = resources.getConfiguration();
+
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            config.setLocale(new Locale(localeCode.toLowerCase()));
+        } else {
+            config.locale = new Locale(localeCode.toLowerCase());
+        }
+        resources.updateConfiguration(config,dm);
+    }
+
+    private class AttemptResignin extends AsyncTask<String, String, JSONObject> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected JSONObject doInBackground(String... args) {
+
+            String name = args[0];
+            String password = args[1];
+            String url = "http://apollo.humber.ca/~n01267335/CENG319/account.php";
+            JSONParser jsonParser = new JSONParser();
+
+            ArrayList params = new ArrayList();
+            params.add(new BasicNameValuePair("username",name));
+            params.add(new BasicNameValuePair("password",password));
+
+            JSONObject json = jsonParser.makeHttpRequest(url, "POST", params);
+            return json;
+        }
+
+        protected void onPostExecute(JSONObject result) {
+            try {
+                if(result!=null) {
+                    //Pass string to HomeActivity page
+                    if(result.getInt("success")==1) {
+                        Users userData = new Users(result.getString("id"),UserPasswordKey,
+                                result.getString("name"),result.getString("uid"),result.getString("email"));
+                        Prevalent.CurrentOnlineUser = userData;
+                        success();
+                    } else {
+                        Toast.makeText(MainActivity.this,result.getString("message"), Toast.LENGTH_SHORT).show();
+                        loadingBar.dismiss();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(),R.string.db_error, Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void success() {
+        Intent intent = new Intent (this, HomeActivity.class);
+        startActivity(intent);
+    }
+
 
 }

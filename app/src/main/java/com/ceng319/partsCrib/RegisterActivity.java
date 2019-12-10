@@ -1,27 +1,22 @@
 package com.ceng319.partsCrib;
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.util.HashMap;
-
+import java.util.ArrayList;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -29,11 +24,11 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText InputFName, InputLName, InputStudentNumber, InputPassword, InputConfirmPassword, InputEmail;
     private ProgressDialog loadingBar;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        getSupportActionBar().hide();
 
         CreateAccountButton = (Button) findViewById(R.id.register_btn);
         InputFName = (EditText) findViewById(R.id.register_FName);
@@ -67,16 +62,16 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(this, "Please Enter your Last Name", Toast.LENGTH_SHORT).show();
         }
         else if(TextUtils.isEmpty(StudentNumber)){
-            Toast.makeText(this, "Please Enter your StudentNumber", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.enter_s_num, Toast.LENGTH_SHORT).show();
         }
         else if(TextUtils.isEmpty(Password)){
-            Toast.makeText(this, "Please Enter a Password", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.enter_pass, Toast.LENGTH_SHORT).show();
         }
        else if(TextUtils.isEmpty(Email)){
             Toast.makeText(this, "Please Enter a Email", Toast.LENGTH_SHORT).show();
         }
        else if(Password.compareTo (ConfirmPassword) == 0){
-            loadingBar.setTitle("Create Account");
+            loadingBar.setTitle("Creating Account");
             loadingBar.setMessage("Please Wait");
             loadingBar.setCanceledOnTouchOutside(false);
             loadingBar.show();
@@ -88,53 +83,58 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    private void ValidateStudentNumber(final String FName, final String LName, final String studentNumber, final String email, final String password) {
-        final DatabaseReference RootRef;
-        RootRef = FirebaseDatabase.getInstance().getReference();
-        RootRef .addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(!(dataSnapshot.child("Users").child(studentNumber).exists())){
-                    HashMap<String, Object> userdataMap = new HashMap<>();
-                    userdataMap.put("Student_Number", studentNumber);
-                    userdataMap.put("First_Name", FName);
-                    userdataMap.put("Last_Name", LName);
-                    userdataMap.put("Email", email);
-                    userdataMap.put("Password", password);
-
-                    RootRef.child("Users").child(studentNumber).updateChildren(userdataMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful())
-                            {
-                                Toast.makeText(RegisterActivity.this, "Account Created", Toast.LENGTH_SHORT).show();
-                                loadingBar.dismiss();
-
-                                Intent intent = new Intent(RegisterActivity.this,LoginActivity.class);
-                                startActivity(intent);
-                                Toast.makeText(RegisterActivity.this, "Account Created", Toast.LENGTH_SHORT).show();
-                            }
-                            else{
-                                loadingBar.dismiss();
-                                Toast.makeText(RegisterActivity.this, "Network Error: Please try again", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                }
-                else{
-                    Toast.makeText(RegisterActivity.this, "This " + studentNumber + " already exists", Toast.LENGTH_SHORT).show();
-                    loadingBar.dismiss();
-
-                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                    startActivity(intent);
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-
+    private void ValidateStudentNumber(String FName, String LName, String StudentNumber, String Email, String Password) {
+        RegisterAccount register = new RegisterAccount();
+        register.execute(StudentNumber,Password,FName,LName,Email);
     }
 
+    private class RegisterAccount extends AsyncTask<String, String, JSONObject> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected JSONObject doInBackground(String... args) {
+
+            String id = args[0];
+            String password = args[1];
+            String name = args[2];
+            String last = args[3];
+            String email = args[4];
+            String url = "http://apollo.humber.ca/~n01267335/CENG319/account.php";
+
+            JSONParser jsonParser = new JSONParser();
+            ArrayList params = new ArrayList();
+            params.add(new BasicNameValuePair("username",id));
+            params.add(new BasicNameValuePair("password",password));
+            params.add(new BasicNameValuePair("name",name));
+            params.add(new BasicNameValuePair("last",last));
+            params.add(new BasicNameValuePair("email",email));
+
+
+            JSONObject json = jsonParser.makeHttpRequest(url, "POST", params);
+            return json;
+        }
+
+        protected void onPostExecute(JSONObject result) {
+            try {
+                if(result!=null) {
+                    if(result.getInt("success")==1) {
+                        loadingBar.dismiss();
+                        Intent intent = new Intent(RegisterActivity.this,LoginActivity.class);
+                        startActivity(intent);
+                        Toast.makeText(RegisterActivity.this, result.getString("message"), Toast.LENGTH_SHORT).show();
+                    } else {
+                        loadingBar.dismiss();
+                        Toast.makeText(RegisterActivity.this, result.getString("message"), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), R.string.db_error, Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

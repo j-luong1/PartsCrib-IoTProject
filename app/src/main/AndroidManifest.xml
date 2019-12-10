@@ -4,45 +4,92 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <permission
+        android:name="com.ceng319.partsCrib.permission.custom"
+        android:description="@string/permission_description"
+        android:icon="@drawable/storage"
+        android:label="@string/permission_label"
+        android:permissionGroup="permissionGroup"
+        android:protectionLevel="dangerous" />
+
+    <uses-permission android:name="com.ceng319.partsCrib.permission.custom" />
+
+    <uses-permission-sdk-23 android:name="android.permission.INTERNET" />
+    <uses-permission-sdk-23 android:name="com.ceng319.partsCrib.permission.custom" />
+
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/humbericon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/humbericon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".CartActivity"></activity>
+        <uses-library android:name="org.apache.http.legacy" android:required="false"></uses-library>
+
+        <activity
+            android:name=".CartActivity"
+            android:parentActivityName=".HomeActivity"
+            android:theme="@style/AppTheme.SlidrActivityTheme"></activity>
         <activity
             android:name=".HomeActivity"
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".RegisterActivity" />
         <activity
+            android:name=".SettingsActivity"
+            android:parentActivityName=".HomeActivity"
+            android:theme="@style/AppTheme.SlidrActivityTheme"></activity>
+        <activity
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme">
+
+            <!-- These create extra app icons on phone after installation -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".ItemActivity" />
-        <activity android:name=".ItemListActivity" />
-        <activity android:name=".ItemMainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <activity android:name=".LoginActivity" /> <!-- <activity android:name=".ItemActivity" /> -->
+        <!-- <activity android:name=".ItemListActivity" /> -->
+        <!-- <activity android:name=".ItemMainActivity"> -->
+        <activity
+            android:name=".ItemActivity"
+            android:parentActivityName=".ItemMainActivity"
+            android:theme="@style/AppTheme.SlidrActivityTheme"></activity>
+        <activity
+            android:name=".ItemListActivity"
+            android:parentActivityName=".ItemMainActivity"
+            android:theme="@style/AppTheme.SlidrActivityTheme"></activity>
+        <activity
+            android:name=".ItemMainActivity"
+            android:parentActivityName=".HomeActivity"
+            android:theme="@style/AppTheme.SlidrActivityTheme">
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
+        <activity
+            android:name=".OrderActivity"
+            android:parentActivityName=".HomeActivity"
+            android:theme="@style/AppTheme.SlidrActivityTheme"></activity>
+        <activity
+            android:name=".OrderDetailActivity"
+            android:parentActivityName=".OrderActivity"
+            android:theme="@style/AppTheme.SlidrActivityTheme" />
         <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
     </application>
 

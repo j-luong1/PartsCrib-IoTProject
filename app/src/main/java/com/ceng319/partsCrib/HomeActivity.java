@@ -1,68 +1,59 @@
 package com.ceng319.partsCrib;
 
-import androidx.annotation.NonNull;
-
 import android.content.Intent;
 import android.os.Bundle;
-
-import com.ceng319.partsCrib.Prevalent.Prevalent;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import android.view.View;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.core.view.GravityCompat;
-import com.google.android.material.navigation.NavigationView;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import io.paperdb.Paper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import com.ceng319.partsCrib.Prevalent.Prevalent;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.navigation.NavigationView;
+
+import io.paperdb.Paper;
+
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("Home");
-
+        toolbar.setTitle(R.string.menu_home);
+        setSupportActionBar(toolbar);
         Paper.init(this);
 
-        setSupportActionBar(toolbar);
-
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-
         DrawerLayout drawer  = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+        TextView userNameTextView = headerView.findViewById(R.id.user_profile_name);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        userNameTextView.setText(Prevalent.CurrentOnlineUser.getStudent_Number());
+        Toast.makeText(HomeActivity.this, Prevalent.CurrentOnlineUser.getStudent_Number(), Toast.LENGTH_SHORT).show();
 
         navigationView.setNavigationItemSelectedListener(this);
 
-        View headerView = navigationView.getHeaderView(0);
-
-        TextView userNameTextView = headerView.findViewById(R.id.user_profile_name);
-
-        userNameTextView.setText(Prevalent.CurrentOnlineUser.getStudent_Number());
-        //Toast.makeText(HomeActivity.this, Prevalent.CurrentOnlineUser.getStudent_Number(), Toast.LENGTH_SHORT).show();
-
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomeActivity.this,CartActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -96,7 +87,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if(id == R.id.nav_orders){
-
+            Intent intent = new Intent(HomeActivity.this,OrderActivity.class);
+            startActivity(intent);
         }
         else if (id == R.id.nav_categories) {
             Intent intent = new Intent(HomeActivity.this,ItemMainActivity.class);
@@ -104,7 +96,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         }
         else if (id == R.id.nav_settings){
-
+            Intent intent = new Intent(HomeActivity.this,SettingsActivity.class);
+            startActivity(intent);
         }
         else if (id == R.id.nav_cart){
             Intent intent = new Intent(HomeActivity.this,CartActivity.class);
@@ -123,5 +116,4 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
 }
